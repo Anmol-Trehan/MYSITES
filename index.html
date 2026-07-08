@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Our Anniversary</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --cream: #FFF8F0;
+    --milk: #FFF0E0;
+    --mocha: #C8956C;
+    --mocha-dark: #8B5E3C;
+    --pink: #F2A7BB;
+    --pink-light: #FFD6E0;
+    --blush: #FFB7C5;
+    --brown: #6B3F2A;
+    --text: #4A2C1A;
+    --soft: #E8C9A0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom Cursor */
+  .cursor-dot {
+    width: 10px; height: 10px;
+    background: var(--pink);
+    border-radius: 50%;
+    position: fixed; top:0; left:0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s;
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 2px solid var(--mocha);
+    border-radius: 50%;
+    position: fixed; top:0; left:0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform 0.18s ease, width 0.2s, height 0.2s;
+    opacity: 0.6;
+  }
+
+  /* Floating Hearts Canvas */
+  #hearts-canvas {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    background: radial-gradient(ellipse at 50% 60%, #FFE8D6 0%, #FFF8F0 70%);
+  }
+  .hero-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--mocha);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 8vw, 5.5rem);
+    color: var(--brown);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.5s;
+  }
+  .hero h1 span { color: var(--pink); }
+  .hero-date {
+    font-size: 0.95rem;
+    color: var(--mocha);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.8s;
+  }
+
+  /* Bear Duo SVG Scene */
+  .bear-scene {
+    position: relative;
+    width: 360px;
+    height: 300px;
+    margin: 2rem auto 0;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+  .bear-scene svg { width:100%; height:100%; }
+
+  /* Counter */
+  .counter-section {
+    position: relative; z-index:1;
+    background: linear-gradient(135deg, #FFF0E0, #FFD6E0);
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  .counter-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--brown);
+    margin-bottom: 2.5rem;
+  }
+  .counter-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .counter-box {
+    background: white;
+    border-radius: 24px;
+    padding: 1.8rem 2rem;
+    min-width: 120px;
+    box-shadow: 0 8px 30px rgba(200,149,108,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  .counter-box::before {
+    content:'';
+    position: absolute;
+    top:0; left:0; right:0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--pink), var(--mocha));
+    border-radius: 24px 24px 0 0;
+  }
+  .counter-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--brown);
+    line-height: 1;
+  }
+  .counter-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--mocha);
+    margin-top: 0.4rem;
+  }
+
+  /* Timeline */
+  .timeline-section {
+    position: relative; z-index:1;
+    padding: 5rem 2rem;
+    background: var(--cream);
+  }
+  .section-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--brown);
+    margin-bottom: 0.5rem;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--mocha);
+    font-style: italic;
+    margin-bottom: 3.5rem;
+    font-size: 1rem;
+  }
+  .timeline {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content:'';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--pink), var(--mocha), var(--pink));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 2.5rem 2rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.6s ease;
+  }
+  .tl-item.visible { opacity:1; transform: translateX(0); }
+  .tl-dot {
+    position: absolute;
+    left: -9px; top: 4px;
+    width: 20px; height: 20px;
+    background: var(--pink);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--pink-light);
+  }
+  .tl-date {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--mocha);
+    margin-bottom: 0.3rem;
+  }
+  .tl-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--brown);
+    margin-bottom: 0.3rem;
+  }
+  .tl-desc {
+    font-size: 0.92rem;
+    color: #7a5540;
+    line-height: 1.6;
+  }
+
+  /* Love Notes (flip cards) */
+  .notes-section {
+    position: relative; z-index:1;
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, #FFE8D6 0%, #FFD6E0 100%);
+  }
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .note-card {
+    height: 220px;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  .note-inner {
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4,0.2,0.2,1);
+    position: relative;
+  }
+  .note-card:hover .note-inner { transform: rotateY(180deg); }
+  .note-front, .note-back {
+    position: absolute;
+    width: 100%; height: 100%;
+    border-radius: 20px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .note-front {
+    background: white;
+    box-shadow: 0 6px 28px rgba(200,149,108,0.14);
+  }
+  .note-back {
+    background: linear-gradient(135deg, var(--mocha), var(--brown));
+    color: white;
+    transform: rotateY(180deg);
+    box-shadow: 0 6px 28px rgba(107,63,42,0.25);
+  }
+  .note-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--pink);
+  }
+  .note-front h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--brown);
+    margin-bottom: 0.4rem;
+  }
+  .note-front p { font-size: 0.85rem; color: var(--mocha); }
+  .note-back p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #FFF0E0;
+  }
+
+  /* Reasons Grid */
+  .reasons-section {
+    position: relative; z-index:1;
+    padding: 5rem 2rem;
+    background: var(--cream);
+  }
+  .reasons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .reason-item {
+    background: white;
+    border-radius: 16px;
+    padding: 1.4rem 1rem;
+    text-align: center;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 20px rgba(200,149,108,0.1);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.92);
+    cursor: default;
+  }
+  .reason-item.visible { opacity:1; transform: scale(1); }
+  .reason-item:hover {
+    border-color: var(--pink);
+    transform: scale(1.04) translateY(-4px);
+    box-shadow: 0 10px 30px rgba(242,167,187,0.22);
+  }
+  .reason-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--pink);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .reason-text {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* Footer */
+  .footer {
+    position: relative; z-index:1;
+    background: linear-gradient(135deg, #FFF0E0, #FFD6E0);
+    text-align: center;
+    padding: 4rem 2rem 3rem;
+  }
+  .footer h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    color: var(--brown);
+    margin-bottom: 0.5rem;
+  }
+  .footer p {
+    color: var(--mocha);
+    font-style: italic;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .footer-bears {
+    width: 200px;
+    margin: 0 auto;
+  }
+
+  /* Decorative Dots */
+  .dot-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 1.5rem 0;
+  }
+  .dot-row span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--pink);
+    display: inline-block;
+    opacity: 0.5;
+  }
+  .dot-row span:nth-child(2) { background: var(--mocha); opacity: 0.7; }
+  .dot-row span:nth-child(3) { background: var(--brown); opacity: 0.5; }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(24px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-12px); }
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  .bear-scene { animation: float 4s ease-in-out infinite, fadeUp 1s ease forwards 1s; }
+
+  /* Paw print decorations */
+  .paw-deco {
+    position: absolute;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="hearts-canvas"></canvas>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Bear Scene SVG -->
+  <div class="bear-scene">
+    <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Grass / ground -->
+      <ellipse cx="180" cy="285" rx="160" ry="18" fill="#F2D0B0" opacity="0.4"/>
+
+      <!-- Flowers -->
+      <g opacity="0.85">
+        <!-- flower 1 -->
+        <circle cx="60" cy="268" r="6" fill="#F2A7BB"/>
+        <circle cx="60" cy="255" r="3" fill="#FFF0E0"/>
+        <circle cx="54" cy="260" r="3" fill="#F2A7BB"/>
+        <circle cx="66" cy="260" r="3" fill="#F2A7BB"/>
+        <line x1="60" y1="268" x2="60" y2="285" stroke="#A8D5A2" stroke-width="2"/>
+        <!-- flower 2 -->
+        <circle cx="300" cy="268" r="6" fill="#FFB7C5"/>
+        <circle cx="300" cy="255" r="3" fill="#FFF0E0"/>
+        <circle cx="294" cy="260" r="3" fill="#FFB7C5"/>
+        <circle cx="306" cy="260" r="3" fill="#FFB7C5"/>
+        <line x1="300" y1="268" x2="300" y2="285" stroke="#A8D5A2" stroke-width="2"/>
+        <!-- flower 3 -->
+        <circle cx="90" cy="278" r="5" fill="#F7CDD8"/>
+        <circle cx="90" cy="267" r="3" fill="#FFF0E0"/>
+        <circle cx="84" cy="272" r="3" fill="#F7CDD8"/>
+        <circle cx="96" cy="272" r="3" fill="#F7CDD8"/>
+        <line x1="90" y1="278" x2="90" y2="285" stroke="#A8D5A2" stroke-width="2"/>
+      </g>
+
+      <!-- Floating hearts above bears -->
+      <g opacity="0.7">
+        <text x="168" y="55" font-size="14" fill="#F2A7BB" text-anchor="middle">&#x2665;</text>
+        <text x="185" y="42" font-size="10" fill="#C8956C" text-anchor="middle">&#x2665;</text>
+        <text x="200" y="58" font-size="12" fill="#FFB7C5" text-anchor="middle">&#x2665;</text>
+      </g>
+
+      <!-- === MOCHA BEAR (Brown, left) === -->
+      <g transform="translate(72, 60)">
+        <!-- Body -->
+        <ellipse cx="55" cy="160" rx="42" ry="48" fill="#C8956C"/>
+        <!-- Belly -->
+        <ellipse cx="55" cy="168" rx="26" ry="30" fill="#E8C9A0"/>
+        <!-- Legs -->
+        <ellipse cx="33" cy="205" rx="16" ry="10" fill="#B07A50"/>
+        <ellipse cx="77" cy="205" rx="16" ry="10" fill="#B07A50"/>
+        <!-- Feet -->
+        <ellipse cx="30" cy="212" rx="14" ry="8" fill="#9A6640"/>
+        <ellipse cx="80" cy="212" rx="14" ry="8" fill="#9A6640"/>
+        <!-- Arms -->
+        <!-- Left arm (holds flowers) -->
+        <ellipse cx="13" cy="155" rx="13" ry="10" fill="#C8956C" transform="rotate(-30 13 155)"/>
+        <!-- Right arm (reaching to milk) -->
+        <ellipse cx="97" cy="155" rx="13" ry="10" fill="#C8956C" transform="rotate(30 97 155)"/>
+        <!-- Hand holding flowers -->
+        <circle cx="6" cy="145" r="8" fill="#C8956C"/>
+        <!-- Flowers in hand -->
+        <line x1="6" y1="137" x2="6" y2="120" stroke="#A8D5A2" stroke-width="2"/>
+        <circle cx="6" cy="115" r="7" fill="#F2A7BB"/>
+        <circle cx="6" cy="108" r="3" fill="#FFE8D6"/>
+        <circle cx="-1" cy="112" r="3" fill="#F2A7BB"/>
+        <circle cx="13" cy="112" r="3" fill="#F2A7BB"/>
+        <line x1="10" y1="130" x2="16" y2="115" stroke="#A8D5A2" stroke-width="2"/>
+        <circle cx="18" cy="110" r="6" fill="#FFB7C5"/>
+        <circle cx="18" cy="104" r="3" fill="#FFE8D6"/>
+        <!-- Neck -->
+        <ellipse cx="55" cy="115" rx="22" ry="12" fill="#C8956C"/>
+        <!-- Head -->
+        <circle cx="55" cy="90" r="40" fill="#C8956C"/>
+        <!-- Ears -->
+        <circle cx="22" cy="60" r="14" fill="#C8956C"/>
+        <circle cx="22" cy="60" r="8" fill="#B07A50"/>
+        <circle cx="88" cy="60" r="14" fill="#C8956C"/>
+        <circle cx="88" cy="60" r="8" fill="#B07A50"/>
+        <!-- Face -->
+        <ellipse cx="55" cy="96" rx="26" ry="22" fill="#E8C9A0"/>
+        <!-- Eyes - happy closed -->
+        <path d="M41 84 Q45 80 49 84" stroke="#6B3F2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M61 84 Q65 80 69 84" stroke="#6B3F2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Blush -->
+        <ellipse cx="37" cy="92" rx="7" ry="4" fill="#F2A7BB" opacity="0.5"/>
+        <ellipse cx="73" cy="92" rx="7" ry="4" fill="#F2A7BB" opacity="0.5"/>
+        <!-- Nose -->
+        <ellipse cx="55" cy="98" rx="5" ry="3.5" fill="#9A6640"/>
+        <!-- Smile -->
+        <path d="M45 105 Q55 114 65 105" stroke="#9A6640" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Scarf -->
+        <path d="M20 118 Q55 128 90 118" stroke="#F2A7BB" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M30 120 Q28 135 32 145" stroke="#F2A7BB" stroke-width="8" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <!-- === MILK BEAR (White/Cream, right) === -->
+      <g transform="translate(188, 60)">
+        <!-- Body -->
+        <ellipse cx="55" cy="160" rx="42" ry="48" fill="#FFF0E0"/>
+        <!-- Belly -->
+        <ellipse cx="55" cy="168" rx="26" ry="30" fill="#FFE8D6"/>
+        <!-- Legs -->
+        <ellipse cx="33" cy="205" rx="16" ry="10" fill="#EDD5B8"/>
+        <ellipse cx="77" cy="205" rx="16" ry="10" fill="#EDD5B8"/>
+        <!-- Feet -->
+        <ellipse cx="30" cy="212" rx="14" ry="8" fill="#DBBF9C"/>
+        <ellipse cx="80" cy="212" rx="14" ry="8" fill="#DBBF9C"/>
+        <!-- Arms -->
+        <!-- Left arm (toward mocha) -->
+        <ellipse cx="13" cy="155" rx="13" ry="10" fill="#FFF0E0" transform="rotate(-30 13 155)"/>
+        <!-- Right arm -->
+        <ellipse cx="97" cy="155" rx="13" ry="10" fill="#FFF0E0" transform="rotate(30 97 155)"/>
+        <!-- Hand holding heart -->
+        <circle cx="104" cy="145" r="8" fill="#FFF0E0"/>
+        <!-- Heart in hand -->
+        <path d="M104 136 C104 131 98 128 98 134 C98 138 104 143 104 143 C104 143 110 138 110 134 C110 128 104 131 104 136Z" fill="#F2A7BB"/>
+        <!-- Neck -->
+        <ellipse cx="55" cy="115" rx="22" ry="12" fill="#FFF0E0"/>
+        <!-- Head -->
+        <circle cx="55" cy="90" r="40" fill="#FFF0E0"/>
+        <!-- Ears -->
+        <circle cx="22" cy="60" r="14" fill="#FFF0E0"/>
+        <circle cx="22" cy="60" r="8" fill="#EDD5B8"/>
+        <circle cx="88" cy="60" r="14" fill="#FFF0E0"/>
+        <circle cx="88" cy="60" r="8" fill="#EDD5B8"/>
+        <!-- Face -->
+        <ellipse cx="55" cy="96" rx="26" ry="22" fill="#FFE8D6"/>
+        <!-- Eyes - happy closed -->
+        <path d="M41 84 Q45 80 49 84" stroke="#6B3F2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M61 84 Q65 80 69 84" stroke="#6B3F2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Blush -->
+        <ellipse cx="37" cy="92" rx="7" ry="4" fill="#F2A7BB" opacity="0.5"/>
+        <ellipse cx="73" cy="92" rx="7" ry="4" fill="#F2A7BB" opacity="0.5"/>
+        <!-- Nose -->
+        <ellipse cx="55" cy="98" rx="5" ry="3.5" fill="#C8956C"/>
+        <!-- Smile -->
+        <path d="M45 105 Q55 114 65 105" stroke="#C8956C" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Hair / bow -->
+        <path d="M35 55 Q55 48 75 55" stroke="#F2A7BB" stroke-width="4" fill="none"/>
+        <!-- Bow -->
+        <path d="M45 50 C40 44 36 50 45 50Z" fill="#F2A7BB"/>
+        <path d="M55 50 C60 44 64 50 55 50Z" fill="#F2A7BB"/>
+        <circle cx="50" cy="50" r="4" fill="#FFB7C5"/>
+        <!-- Scarf -->
+        <path d="M20 118 Q55 128 90 118" stroke="#C8956C" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M75 120 Q77 135 73 145" stroke="#C8956C" stroke-width="8" fill="none" stroke-linecap="round"/>
+      </g>
+
+      <!-- Joined hands in the middle -->
+      <ellipse cx="178" cy="210" rx="14" ry="10" fill="#C8956C" opacity="0.6"/>
+      <ellipse cx="188" cy="210" rx="14" ry="10" fill="#FFF0E0" opacity="0.6"/>
+
+      <!-- Stars / sparkles -->
+      <text x="145" y="78" font-size="12" fill="#F2A7BB" opacity="0.8">*</text>
+      <text x="218" y="68" font-size="16" fill="#C8956C" opacity="0.6">*</text>
+      <text x="130" y="130" font-size="10" fill="#FFB7C5" opacity="0.7">*</text>
+    </svg>
+  </div>
+
+  <p class="hero-subtitle">Happy Anniversary</p>
+  <h1>MRS RUCHITA TREHAN <span>&amp;</span> MR ANMOL TREHAN</h1>
+  <p class="hero-date">Together since February 8, 2025</p>
+  <div class="dot-row"><span></span><span></span><span></span></div>
+</section>
+
+<!-- COUNTER -->
+<section class="counter-section">
+  <h2>We have been together for...</h2>
+  <div class="counter-grid">
+    <div class="counter-box">
+      <div class="counter-num" id="c-years">0</div>
+      <div class="counter-label">Years</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="c-months">0</div>
+      <div class="counter-label">Months</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="c-days">0</div>
+      <div class="counter-label">Days</div>
+    </div>
+    <div class="counter-box">
+      <div class="counter-num" id="c-hours">0</div>
+      <div class="counter-label">Hours</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <h2 class="section-title">Our Story</h2>
+  <p class="section-sub">Every chapter, written together</p>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">FEBRUARY 08 , 2025</div>
+      <div class="tl-title">The Beginning</div>
+      <div class="tl-desc">The day everything changed. We found each other and the world got a little warmer.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">A Special Day</div>
+      <div class="tl-title">Our First Video Call Date</div>
+      <div class="tl-desc">Nervous laughs, stolen glances, and a moment we both knew something magical had started.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Every Single Day</div>
+      <div class="tl-title">Right Now</div>
+      <div class="tl-desc">Still choosing you. Every morning. Every night. Forever and always.</div>
+    </div>
+  </div>
+</section>
+<!-- LOVE NOTES (flip cards) -->
+<section class="notes-section">
+  <h2 class="section-title">Little Love Notes</h2>
+  <p class="section-sub">Hover to unwrap a secret</p>
+  <div class="notes-grid">
+    <div class="note-card">
+      <div class="note-inner">
+        <div class="note-front">
+          <div class="note-icon">&#x2665;</div>
+          <h3>You are my calm</h3>
+          <p>Flip to read...</p>
+        </div>
+        <div class="note-back">
+          <p>"In your arms, the whole world quiets down. You are my favourite place to be."</p>
+        </div>
+      </div>
+    </div>
+    <div class="note-card">
+      <div class="note-inner">
+        <div class="note-front">
+          <div class="note-icon">&#x2665;</div>
+          <h3>My favourite laugh</h3>
+          <p>Flip to read...</p>
+        </div>
+        <div class="note-back">
+          <p>"I could listen to you laugh forever. It is my most treasured sound in the whole world."</p>
+        </div>
+      </div>
+    </div>
+    <div class="note-card">
+      <div class="note-inner">
+        <div class="note-front">
+          <div class="note-icon">&#x2665;</div>
+          <h3>Home is you</h3>
+          <p>Flip to read...</p>
+        </div>
+        <div class="note-back">
+          <p>"No matter where we go or what we do, as long as you are there, I am already home."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REASONS -->
+<section class="reasons-section">
+  <h2 class="section-title">Reasons I Love You</h2>
+  <p class="section-sub">Just a few of many, many more</p>
+  <div class="reasons-grid" id="reasons-grid">
+    <div class="reason-item"><div class="reason-num">01</div><div class="reason-text">The way you look at me with all the love in your eyes always melts me down</div></div>
+    <div class="reason-item"><div class="reason-num">02</div><div class="reason-text">How you make every ordinary moment feel special</div></div>
+    <div class="reason-item"><div class="reason-num">03</div><div class="reason-text">Your kindness that never asks for anything in return</div></div>
+    <div class="reason-item"><div class="reason-num">04</div><div class="reason-text">The way you make me feel how special and discuss our future together</div></div>
+    <div class="reason-item"><div class="reason-num">05</div><div class="reason-text">How you always know exactly what I need</div></div>
+    <div class="reason-item"><div class="reason-num">06</div><div class="reason-text">Every single day you choose to love me back</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <h2>Happy Anniversary My Baby Girl</h2>
+  <p>Here is to forever, my love.</p>
+  <div class="footer-bears">
+    <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+      <!-- Mocha small -->
+      <g transform="translate(10,10) scale(0.55)">
+        <ellipse cx="55" cy="110" rx="38" ry="42" fill="#C8956C"/>
+        <ellipse cx="55" cy="118" rx="22" ry="26" fill="#E8C9A0"/>
+        <circle cx="55" cy="60" r="34" fill="#C8956C"/>
+        <circle cx="28" cy="36" r="12" fill="#C8956C"/>
+        <circle cx="28" cy="36" r="7" fill="#B07A50"/>
+        <circle cx="82" cy="36" r="12" fill="#C8956C"/>
+        <circle cx="82" cy="36" r="7" fill="#B07A50"/>
+        <ellipse cx="55" cy="66" rx="22" ry="18" fill="#E8C9A0"/>
+        <path d="M43 56 Q47 52 51 56" stroke="#6B3F2A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M59 56 Q63 52 67 56" stroke="#6B3F2A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="43" cy="62" rx="5" ry="3" fill="#F2A7BB" opacity="0.5"/>
+        <ellipse cx="67" cy="62" rx="5" ry="3" fill="#F2A7BB" opacity="0.5"/>
+        <ellipse cx="55" cy="68" rx="4" ry="3" fill="#9A6640"/>
+        <path d="M47 74 Q55 81 63 74" stroke="#9A6640" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </g>
+      <!-- Big heart in middle -->
+      <path d="M100 55 C100 47 90 44 90 52 C90 58 100 65 100 65 C100 65 110 58 110 52 C110 44 100 47 100 55Z" fill="#F2A7BB" opacity="0.9"/>
+      <!-- Milk small -->
+      <g transform="translate(110,10) scale(0.55)">
+        <ellipse cx="55" cy="110" rx="38" ry="42" fill="#FFF0E0"/>
+        <ellipse cx="55" cy="118" rx="22" ry="26" fill="#FFE8D6"/>
+        <circle cx="55" cy="60" r="34" fill="#FFF0E0"/>
+        <circle cx="28" cy="36" r="12" fill="#FFF0E0"/>
+        <circle cx="28" cy="36" r="7" fill="#EDD5B8"/>
+        <circle cx="82" cy="36" r="12" fill="#FFF0E0"/>
+        <circle cx="82" cy="36" r="7" fill="#EDD5B8"/>
+        <ellipse cx="55" cy="66" rx="22" ry="18" fill="#FFE8D6"/>
+        <path d="M43 56 Q47 52 51 56" stroke="#6B3F2A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M59 56 Q63 52 67 56" stroke="#6B3F2A" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="43" cy="62" rx="5" ry="3" fill="#F2A7BB" opacity="0.5"/>
+        <ellipse cx="67" cy="62" rx="5" ry="3" fill="#F2A7BB" opacity="0.5"/>
+        <ellipse cx="55" cy="68" rx="4" ry="3" fill="#C8956C"/>
+        <path d="M47 74 Q55 81 63 74" stroke="#C8956C" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- bow -->
+        <path d="M41 28 C36 22 32 28 41 28Z" fill="#F2A7BB"/>
+        <path d="M51 28 C56 22 60 28 51 28Z" fill="#F2A7BB"/>
+        <circle cx="46" cy="28" r="3.5" fill="#FFB7C5"/>
+      </g>
+    </svg>
+  </div>
+  <div class="dot-row" style="margin-top:1.5rem"><span></span><span></span><span></span></div>
+  <p style="font-size:0.8rem; color:var(--mocha); margin-top:1rem; opacity:0.7;">Made with love, just for you</p>
+</footer>
+
+<script>
+  // Custom Cursor
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  });
+
+  // Anniversary Counter
+  const START_DATE = new Date('2025-02-14T00:00:00');
+  function updateCounter() {
+    const now = new Date();
+    const diff = now - START_DATE;
+    const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const years = Math.floor(totalDays / 365);
+    const months = Math.floor((totalDays % 365) / 30);
+    const days = totalDays % 30;
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    document.getElementById('c-years').textContent = years;
+    document.getElementById('c-months').textContent = months;
+    document.getElementById('c-days').textContent = days;
+    document.getElementById('c-hours').textContent = hours;
+  }
+  updateCounter();
+  setInterval(updateCounter, 60000);
+
+  // Floating Hearts Canvas
+  const canvas = document.getElementById('hearts-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const hearts = [];
+  const heartColors = ['#F2A7BB','#FFB7C5','#C8956C','#F7CDD8','#E8C9A0'];
+  for (let i = 0; i < 28; i++) {
+    hearts.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 14 + 6,
+      speed: Math.random() * 0.5 + 0.2,
+      opacity: Math.random() * 0.5 + 0.1,
+      color: heartColors[Math.floor(Math.random() * heartColors.length)],
+      drift: (Math.random() - 0.5) * 0.4
+    });
+  }
+
+  function drawHeart(cx, cy, size, color, opacity) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.bezierCurveTo(cx, cy - size * 0.3, cx - size * 0.5, cy - size * 0.6, cx - size * 0.5, cy - size * 0.3);
+    ctx.bezierCurveTo(cx - size * 0.5, cy + size * 0.1, cx, cy + size * 0.4, cx, cy + size * 0.5);
+    ctx.bezierCurveTo(cx, cy + size * 0.4, cx + size * 0.5, cy + size * 0.1, cx + size * 0.5, cy - size * 0.3);
+    ctx.bezierCurveTo(cx + size * 0.5, cy - size * 0.6, cx, cy - size * 0.3, cx, cy);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function animateHearts() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hearts.forEach(h => {
+      drawHeart(h.x, h.y, h.size, h.color, h.opacity);
+      h.y -= h.speed;
+      h.x += h.drift;
+      if (h.y < -20) {
+        h.y = canvas.height + 20;
+        h.x = Math.random() * canvas.width;
+      }
+    });
+    requestAnimationFrame(animateHearts);
+  }
+  animateHearts();
+
+  // Scroll Reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.tl-item, .reason-item').forEach(el => observer.observe(el));
+
+  // Stagger reason items
+  document.querySelectorAll('.reason-item').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+  });
+</script>
+</body>
+</html>
